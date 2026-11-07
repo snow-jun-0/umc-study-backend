@@ -1,11 +1,17 @@
 package com.umc.study.controller;
 
+import com.umc.study.dto.ApiResponse;
 import com.umc.study.dto.EmailCheckResponse;
+import com.umc.study.dto.MemberResponse;
 import com.umc.study.dto.NicknameCheckResponse;
+import com.umc.study.dto.SignUpRequest;
 import com.umc.study.service.MemberService;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,5 +33,13 @@ public class MemberController {
     public EmailCheckResponse checkEmail(
             @PathVariable @Email(message = "이메일 형식이 올바르지 않습니다.") String email) {
         return memberService.checkEmail(email);
+    }
+
+    // 회원가입 — 성공하면 201 Created, 응답에 password는 절대 포함하지 않아요.
+    @PostMapping
+    public ResponseEntity<ApiResponse<MemberResponse>> signUp(@Valid @RequestBody SignUpRequest request) {
+        MemberResponse response = memberService.signUp(request);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.created("회원가입에 성공했습니다.", response));
     }
 }
