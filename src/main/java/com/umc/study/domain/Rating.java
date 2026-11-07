@@ -2,6 +2,7 @@ package com.umc.study.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,9 +38,16 @@ public class Rating extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String comment;
 
+    @Builder
     public Rating(Member member, Long movieId, Integer score, String comment) {
         this.member = member;
         this.movieId = movieId;
+        this.score = score;
+        this.comment = comment;
+    }
+
+    // 엔티티가 자기 상태를 바꾸는 메서드를 갖게 해서, 서비스에서 setter로 흩뿌리지 않아요.
+    public void update(Integer score, String comment) {
         this.score = score;
         this.comment = comment;
     }
